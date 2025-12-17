@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fbcrunning-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fbcrunning
+      MYSQL_USER: fbcrunning
+      MYSQL_PASSWORD: fbcrunning
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: fbcrunning-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/fbcrunning?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: fbcrunning
+      SPRING_DATASOURCE_PASSWORD: fbcrunning
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Frontend in dev mode - comment out if using `npm run dev` locally
+  # frontend:
+  #   build: ./frontend
+  #   container_name: fbcrunning-frontend
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - backend
+
+volumes:
+  mysql_data:

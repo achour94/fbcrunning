@@ -1,0 +1,29 @@
+#!/bin/sh
+# Maven Wrapper script
+# Downloads maven-wrapper.jar if not present and runs Maven
+
+set -e
+
+WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES=".mvn/wrapper/maven-wrapper.properties"
+
+# Find project base directory
+cd "$(dirname "$0")"
+
+# Download wrapper if needed
+if [ ! -f "$WRAPPER_JAR" ]; then
+    echo "Downloading Maven Wrapper..."
+    if command -v curl > /dev/null; then
+        WRAPPER_URL=$(grep wrapperUrl "$WRAPPER_PROPERTIES" | cut -d'=' -f2-)
+        curl -sL "$WRAPPER_URL" -o "$WRAPPER_JAR"
+    elif command -v wget > /dev/null; then
+        WRAPPER_URL=$(grep wrapperUrl "$WRAPPER_PROPERTIES" | cut -d'=' -f2-)
+        wget -q "$WRAPPER_URL" -O "$WRAPPER_JAR"
+    else
+        echo "Error: curl or wget required"
+        exit 1
+    fi
+fi
+
+# Run Maven
+exec java -jar "$WRAPPER_JAR" "$@"
