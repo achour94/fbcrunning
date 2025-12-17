@@ -19,6 +19,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <jib.version>3.4.4</jib.version>
     </properties>
 
     <dependencies>
@@ -83,6 +84,42 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Jib for containerization -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
+                <configuration>
+                    <from>
+                        <image>eclipse-temurin:21-jre-alpine</image>
+                        <!-- For ARM64 Mac (Apple Silicon) -->
+                        <platforms>
+                            <platform>
+                                <architecture>arm64</architecture>
+                                <os>linux</os>
+                            </platform>
+                        </platforms>
+                    </from>
+                    <to>
+                        <image>fbcrunning-backend</image>
+                        <tags>
+                            <tag>latest</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <jvmFlags>
+                            <jvmFlag>-Xms256m</jvmFlag>
+                            <jvmFlag>-Xmx512m</jvmFlag>
+                        </jvmFlags>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <user>1000</user>
+                    </container>
                 </configuration>
             </plugin>
         </plugins>
