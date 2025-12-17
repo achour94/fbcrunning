@@ -16,6 +16,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks:
+      - fbcrunning-net
 
   backend:
     image: fbcrunning-backend:latest
@@ -30,6 +33,13 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - fbcrunning-net
 
 volumes:
   mysql_data:
+
+networks:
+  fbcrunning-net:
+    driver: bridge
