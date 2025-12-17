@@ -20,6 +20,7 @@
     <properties>
         <java.version>21</java.version>
         <jib.version>3.4.4</jib.version>
+        <jib.architecture>amd64</jib.architecture>
     </properties>
 
     <dependencies>
@@ -98,7 +99,7 @@
                         <!-- For ARM64 Mac (Apple Silicon) -->
                         <platforms>
                             <platform>
-                                <architecture>arm64</architecture>
+                                <architecture>${jib.architecture}</architecture>
                                 <os>linux</os>
                             </platform>
                         </platforms>
